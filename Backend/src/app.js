@@ -8,29 +8,18 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        
-        // Allow any vercel preview/production domain or localhost
-        if (origin.includes("vercel.app") || origin.includes("localhost") || origin.includes("127.0.0.1")) {
-            return callback(null, true);
-        }
-        
-        callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true
+    origin: true, // Automatically allows any requesting origin (Vercel, localhost, etc.)
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
 }));
 
 /* require all the routes here */
 const authRouter = require("./routes/auth.routes")
 const interviewRouter = require("./routes/interview.routes")
 
-
 /* using all the routes here */
 app.use("/api/auth", authRouter)
 app.use("/api/interview", interviewRouter)
-
-
 
 module.exports = app

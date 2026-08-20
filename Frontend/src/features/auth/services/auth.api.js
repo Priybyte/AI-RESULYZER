@@ -35,8 +35,12 @@ export async function login({ email, password }) {
         email, password
     })
 
+    console.log(response);
+
     return response.data
 }
+
+
 
 export async function loginWithGoogle(accessToken) {
     const response = await api.post("/api/auth/google", { accessToken })
