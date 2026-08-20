@@ -1,4 +1,5 @@
 const GOOGLE_IDENTITY_SCRIPT = "https://accounts.google.com/gsi/client"
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
 let googleScriptPromise
 
@@ -9,7 +10,7 @@ async function getGoogleClientId() {
     // A public OAuth client ID is safe to expose. This fallback lets the app
     // use the backend configuration even when Vite was started before .env
     // was created or when the frontend has no local .env file.
-    const response = await fetch("http://localhost:3000/api/auth/google/config")
+    const response = await fetch(`${API_URL}/api/auth/google/config`)
     if (!response.ok) return ""
 
     const { clientId } = await response.json()
