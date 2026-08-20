@@ -16,6 +16,10 @@ export const useAuth = () => {
     const { user, setUser, loading, setLoading } = context
     const [ submitting, setSubmitting ] = useState(false)
 
+    const saveAuthToken = (data) => {
+        if (data?.token) localStorage.setItem("token", data.token)
+    }
+
 
     const handleLogin = async ({ email, password }) => {
         setSubmitting(true)
@@ -24,6 +28,7 @@ export const useAuth = () => {
             if (!data?.user) {
                 throw new Error("Login failed")
             }
+            saveAuthToken(data)
             setUser(data.user)
             return data
         } catch (err) {
@@ -40,6 +45,7 @@ export const useAuth = () => {
             if (!data?.user) {
                 throw new Error(data?.message || "Registration failed")
             }
+            saveAuthToken(data)
             setUser(data.user)
             return data
         } catch (err) {
@@ -58,7 +64,7 @@ export const useAuth = () => {
         } finally {
             // The API clears the httpOnly cookie. Clear any token left by a
             // previous client implementation as well.
-            ;[ "token", "authToken", "accessToken" ].forEach((key) => {
+            ;[ "token", "jwt", "authToken", "accessToken" ].forEach((key) => {
                 localStorage.removeItem(key)
                 sessionStorage.removeItem(key)
             })
@@ -73,6 +79,7 @@ export const useAuth = () => {
             const accessToken = await requestGoogleAccessToken()
             const data = await loginWithGoogle(accessToken)
             if (!data?.user) throw new Error(data?.message || "Google sign-in failed")
+            saveAuthToken(data)
             setUser(data.user)
             return data
         } catch (err) {

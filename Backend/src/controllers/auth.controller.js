@@ -56,6 +56,7 @@ async function registerUserController(req, res) {
 
         res.status(201).json({
             message: "User registered successfully",
+            token,
             user: {
                 id: user._id,
                 username: user.username,
@@ -107,6 +108,7 @@ async function loginUserController(req, res) {
         res.cookie("token", token, { httpOnly: true, sameSite: "lax" })
         return res.status(200).json({
             message: "User logged in successfully.",
+            token,
             user: {
                 id: user._id,
                 username: user.username,
@@ -161,6 +163,7 @@ async function googleLoginController(req, res) {
         res.cookie("token", token, { httpOnly: true, sameSite: "lax" })
         return res.status(200).json({
             message: "Signed in with Google",
+            token,
             user: { id: user._id, username: user.username, email: user.email }
         })
     } catch (err) {
