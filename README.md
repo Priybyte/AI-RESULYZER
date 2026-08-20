@@ -37,5 +37,3 @@ INTERVIEW-AI/
     ├── src/          # Components, pages, and services
     ├── .env.example  # Template for frontend environment variables
     └── package.json  # Frontend dependencies
-
----
