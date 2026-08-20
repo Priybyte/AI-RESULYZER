@@ -2,9 +2,20 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "https://pri-rezulyzer-10082004.onrender.com",
+    baseURL: "https://pri-rezulyzer-10082004.onrender.com/api",
     withCredentials: true,
     timeout: 15000
+})
+
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token") || localStorage.getItem("jwt")
+
+    if (token) {
+        config.headers = config.headers ?? {}
+        config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
 })
 
 api.interceptors.response.use(
@@ -23,7 +34,7 @@ api.interceptors.response.use(
 )
 
 export async function register({ username, email, password }) {
-    const response = await api.post('/api/auth/register', {
+    const response = await api.post('/auth/register', {
         username, email, password
     })
 
@@ -31,11 +42,9 @@ export async function register({ username, email, password }) {
 }
 
 export async function login({ email, password }) {
-    const response = await api.post("/api/auth/login", {
+    const response = await api.post("/auth/login", {
         email, password
     })
-
-    console.log(response);
 
     return response.data
 }
@@ -43,18 +52,18 @@ export async function login({ email, password }) {
 
 
 export async function loginWithGoogle(accessToken) {
-    const response = await api.post("/api/auth/google", { accessToken })
+    const response = await api.post("/auth/google", { accessToken })
     return response.data
 }
 
 export async function logout() {
-    const response = await api.get("/api/auth/logout")
+    const response = await api.get("/auth/logout")
 
     return response.data
 }
 
 export async function getMe() {
-    const response = await api.get("/api/auth/get-me")
+    const response = await api.get("/auth/get-me")
 
     return response.data
 }
