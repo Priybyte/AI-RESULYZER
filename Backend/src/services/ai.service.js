@@ -59,8 +59,8 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 
 async function generatePdfFromHtml(htmlContent) {
     const text = htmlContent
-        .replace(/<style[\\s\\S]*?<\\/style>|<script[\\s\\S]*?<\\/script>/gi, "")
-        .replace(/<\\/(p|div|h[1-6]|li|tr)>|<br\\s*\\/?>/gi, "\\n")
+        .replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, "")
+        .replace(/<\/(p|div|h[1-6]|li|tr)>|<br\s*\/?>/gi, "\n")
         .replace(/<li[^>]*>/gi, "• ")
         .replace(/<[^>]+>/g, "")
         .replace(/&nbsp;/gi, " ")
@@ -69,7 +69,7 @@ async function generatePdfFromHtml(htmlContent) {
         .replace(/&gt;/gi, ">")
         .replace(/&quot;/gi, '"')
         .replace(/&#39;/gi, "'")
-        .replace(/\\n{3,}/g, "\\n\\n")
+        .replace(/\n{3,}/g, "\n\n")
         .trim()
 
     return new Promise((resolve, reject) => {
