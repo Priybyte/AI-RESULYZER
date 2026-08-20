@@ -55,9 +55,79 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 
 }
 
+function decodeHtml(value) {
+    return value
+        .replace(/<br\s*\/?>/gi, " ")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&nbsp;/gi, " ")
+        .replace(/&amp;/gi, "&")
+        .replace(/&lt;/gi, "<")
+        .replace(/&gt;/gi, ">")
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/\s+/g, " ")
+        .trim()
+}
 
+function htmlToResumeBlocks(htmlContent) {
+    const sanitizedHtml = htmlContent.replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, "")
+    const blocks = []
+    const pattern = /<(h1|h2|h3|p|li|div)[^>]*>([\s\S]*?)<\/\1>/gi
+    let match
+
+    while ((match = pattern.exec(sanitizedHtml)) !== null) {
+        const text = decodeHtml(match[2])
+        if (!text) continue
+        const tag = match[1].toLowerCase()
+        blocks.push({ text, type: tag === "h1" ? "name" : tag === "h2" ? "section" : tag === "h3" ? "role" : tag === "li" ? "bullet" : "body" })
+    }
+
+    return blocks.length ? blocks : [{ text: decodeHtml(sanitizedHtml), type: "body" }]
+}
+
+function generateProfessionalResumePdf(htmlContent) {
+    const blocks = htmlToResumeBlocks(htmlContent)
+
+    return new Promise((resolve, reject) => {
+        const document = new PDFDocument({
+            size: "A4",
+            margins: { top: 42, right: 52, bottom: 42, left: 52 },
+            info: { Title: "Resume" }
+        })
+        const chunks = []
+
+        document.on("data", (chunk) => chunks.push(chunk))
+        document.on("end", () => resolve(Buffer.concat(chunks)))
+        document.on("error", reject)
+
+        blocks.forEach((block, index) => {
+            if (block.type === "name") {
+                document.font("Helvetica-Bold").fontSize(20).fillColor("#111827").text(block.text, { align: "center" })
+                document.moveDown(0.2)
+            } else if (block.type === "section") {
+                if (document.y > 70) document.moveDown(0.7)
+                document.font("Helvetica-Bold").fontSize(10).fillColor("#1d4ed8").text(block.text.toUpperCase(), { characterSpacing: 0.8 })
+                document.moveDown(0.15)
+                document.strokeColor("#bfdbfe").lineWidth(0.8).moveTo(document.page.margins.left, document.y).lineTo(document.page.width - document.page.margins.right, document.y).stroke()
+                document.moveDown(0.35)
+            } else if (block.type === "role") {
+                document.font("Helvetica-Bold").fontSize(10.5).fillColor("#111827").text(block.text, { lineGap: 1 })
+                document.moveDown(0.12)
+            } else if (block.type === "bullet") {
+                document.font("Helvetica").fontSize(9.5).fillColor("#1f2937").text(`-  ${block.text}`, { indent: 10, hangingIndent: 10, lineGap: 2 })
+                document.moveDown(0.12)
+            } else {
+                document.font("Helvetica").fontSize(9.5).fillColor("#374151").text(block.text, { align: index < 3 ? "center" : "left", lineGap: 2 })
+                document.moveDown(0.2)
+            }
+        })
+        document.end()
+    })
+}
 
 async function generatePdfFromHtml(htmlContent) {
+    return generateProfessionalResumePdf(htmlContent)
+    /*
     const text = htmlContent
         .replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, "")
         .replace(/<\/(p|div|h[1-6]|li|tr)>|<br\s*\/?>/gi, "\n")
@@ -94,6 +164,7 @@ async function generatePdfFromHtml(htmlContent) {
         })
         document.end()
     })
+    */
 }
 
 async function generateResumePdf({ resume, selfDescription, jobDescription }) {
@@ -107,8 +178,8 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                         Self Description: ${selfDescription}
                         Job Description: ${jobDescription}
 
-                        the response should be a JSON object with a single field "html" which contains the HTML content of the resume which can be converted to PDF using any library like puppeteer.
-                        The resume should be tailored for the given job description and should highlight the candidate's strengths and relevant experience. The HTML content should be well-formatted and structured, making it easy to read and visually appealing.
+                        The response should be a JSON object with a single field "html". Use one <h1> for the candidate name, a short contact <p>, <h2> section headings, <h3> for job/project titles, <p> for descriptions, and <ul><li> for achievements. Do not use tables, columns, inline styles, images, or a document title such as "Tailored Resume".
+                        The resume should be tailored for the given job description and should highlight the candidate's strengths and relevant experience. Use clear sections such as Summary, Experience, Projects, Skills, and Education.
                         The content of resume should be not sound like it's generated by AI and should be as close as possible to a real human-written resume.
                         you can highlight the content using some colors or different font styles but the overall design should be simple and professional.
                         The content should be ATS friendly, i.e. it should be easily parsable by ATS systems without losing important information.
@@ -133,4 +204,4 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
 
 }
 
-module.exports = { generateInterviewReport, generateResumePdf }
+module.exports = { generateInterviewReport, generateResumePdf, generatePdfFromHtml }
