@@ -2,65 +2,55 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "http://localhost:3000",
-    withCredentials: true
+    baseURL: import.meta.env.VITE_API_BASE_URL?.trim() || "http://localhost:3000",
+    withCredentials: true,
+    timeout: 15000
 })
 
-export async function register({ username, email, password }) {
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.code === "ECONNABORTED" || error.code === "ETIMEDOUT") {
+            return Promise.reject(new Error("The server took too long to respond. Please try again."))
+        }
 
-    try {
-        const response = await api.post('/api/auth/register', {
-            username, email, password
-        })
+        if (!error.response) {
+            return Promise.reject(new Error("Unable to reach the server. Make sure the backend is running on port 3000."))
+        }
 
-        return response.data
-
-    } catch (err) {
-
-        console.log(err)
-
+        return Promise.reject(new Error(error.response.data?.message || "Authentication request failed"))
     }
+)
 
+export async function register({ username, email, password }) {
+    const response = await api.post('/api/auth/register', {
+        username, email, password
+    })
+
+    return response.data
 }
 
 export async function login({ email, password }) {
+    const response = await api.post("/api/auth/login", {
+        email, password
+    })
 
-    try {
+    return response.data
+}
 
-        const response = await api.post("/api/auth/login", {
-            email, password
-        })
-
-        return response.data
-
-    } catch (err) {
-        console.log(err)
-    }
-
+export async function loginWithGoogle(accessToken) {
+    const response = await api.post("/api/auth/google", { accessToken })
+    return response.data
 }
 
 export async function logout() {
-    try {
+    const response = await api.get("/api/auth/logout")
 
-        const response = await api.get("/api/auth/logout")
-
-        return response.data
-
-    } catch (err) {
-
-    }
+    return response.data
 }
 
 export async function getMe() {
+    const response = await api.get("/api/auth/get-me")
 
-    try {
-
-        const response = await api.get("/api/auth/get-me")
-
-        return response.data
-
-    } catch (err) {
-        console.log(err)
-    }
-
+    return response.data
 }

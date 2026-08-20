@@ -2,20 +2,35 @@ import React, { useState, useRef } from 'react'
 import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
+import { useAuth } from '../../auth/hooks/useAuth.js'
 
 const Home = () => {
 
-    const { loading, generateReport,reports } = useInterview()
+    const { loading, generateReport, reports } = useInterview()
+    const { user, handleLogout } = useAuth()
     const [ jobDescription, setJobDescription ] = useState("")
     const [ selfDescription, setSelfDescription ] = useState("")
+    const [ resumeFile, setResumeFile ] = useState(null)
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
 
+    const handleResumeChange = (e) => {
+        const file = e.target.files?.[0] || null
+        setResumeFile(file)
+    }
+
     const handleGenerateReport = async () => {
-        const resumeFile = resumeInputRef.current.files[ 0 ]
-        const data = await generateReport({ jobDescription, selfDescription, resumeFile })
-        navigate(`/interview/${data._id}`)
+        const selectedFile = resumeFile || resumeInputRef.current?.files?.[0] || null
+        const data = await generateReport({ jobDescription, selfDescription, resumeFile: selectedFile })
+        if (data?._id) {
+            navigate(`/interview/${data._id}`)
+        }
+    }
+
+    const handleDashboardLogout = async () => {
+        await handleLogout()
+        navigate('/login', { replace: true })
     }
 
     if (loading) {
@@ -31,8 +46,15 @@ const Home = () => {
 
             {/* Page Header */}
             <header className='page-header'>
-                <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
-                <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
+                <div>
+                    <span className='dashboard-eyebrow'>AI Resume &amp; Interview Analyzer</span>
+                    <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
+                    <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
+                </div>
+                <button type='button' className='logout-button' onClick={handleDashboardLogout}>
+                    <svg aria-hidden='true' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4' /><polyline points='16 17 21 12 16 7' /><line x1='21' y1='12' x2='9' y2='12' /></svg>
+                    Logout{user?.username ? ` (${user.username})` : ''}
+                </button>
             </header>
 
             {/* Main Card */}
@@ -75,13 +97,21 @@ const Home = () => {
                                 Upload Resume
                                 <span className='badge badge--best'>Best Results</span>
                             </label>
-                            <label className='dropzone' htmlFor='resume'>
+                            <label className={`dropzone ${resumeFile ? 'dropzone--selected' : ''}`} htmlFor='resume'>
                                 <span className='dropzone__icon'>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 16 12 12 8 16" /><line x1="12" y1="12" x2="12" y2="21" /><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" /></svg>
                                 </span>
-                                <p className='dropzone__title'>Click to upload or drag &amp; drop</p>
-                                <p className='dropzone__subtitle'>PDF or DOCX (Max 5MB)</p>
-                                <input ref={resumeInputRef} hidden type='file' id='resume' name='resume' accept='.pdf,.docx' />
+                                <p className='dropzone__title'>{resumeFile ? resumeFile.name : 'Click to upload or drag & drop'}</p>
+                                <p className='dropzone__subtitle'>{resumeFile ? `${(resumeFile.size / 1024).toFixed(1)} KB selected` : 'PDF or DOCX (Max 5MB)'}</p>
+                                <input
+                                    ref={resumeInputRef}
+                                    className='dropzone__input'
+                                    onChange={handleResumeChange}
+                                    type='file'
+                                    id='resume'
+                                    name='resume'
+                                    accept='.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                                />
                             </label>
                         </div>
 

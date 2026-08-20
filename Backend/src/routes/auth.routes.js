@@ -19,6 +19,10 @@ authRouter.post("/register", authController.registerUserController)
  */
 authRouter.post("/login", authController.loginUserController)
 
+authRouter.post("/google", authController.googleLoginController)
+
+authRouter.get("/google/config", authController.getGoogleConfigController)
+
 
 /**
  * @route GET /api/auth/logout

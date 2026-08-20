@@ -1,66 +1,86 @@
-import { useContext, useEffect } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../auth.context";
-import { login, register, logout, getMe } from "../services/auth.api";
+import { login, loginWithGoogle, register, logout } from "../services/auth.api";
+import { requestGoogleAccessToken } from "../services/google.identity";
 
 
 
 export const useAuth = () => {
 
     const context = useContext(AuthContext)
+
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider")
+    }
+
     const { user, setUser, loading, setLoading } = context
+    const [ submitting, setSubmitting ] = useState(false)
 
 
     const handleLogin = async ({ email, password }) => {
-        setLoading(true)
+        setSubmitting(true)
         try {
             const data = await login({ email, password })
+            if (!data?.user) {
+                throw new Error("Login failed")
+            }
             setUser(data.user)
+            return data
         } catch (err) {
-
+            throw new Error(err.message || "Login failed")
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
     }
 
     const handleRegister = async ({ username, email, password }) => {
-        setLoading(true)
+        setSubmitting(true)
         try {
             const data = await register({ username, email, password })
+            if (!data?.user) {
+                throw new Error(data?.message || "Registration failed")
+            }
             setUser(data.user)
+            return data
         } catch (err) {
-
+            const message = err.message || "Registration failed"
+            throw new Error(message)
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
     }
 
     const handleLogout = async () => {
         setLoading(true)
         try {
-            const data = await logout()
-            setUser(null)
+            await logout()
         } catch (err) {
-
         } finally {
+            // The API clears the httpOnly cookie. Clear any token left by a
+            // previous client implementation as well.
+            ;[ "token", "authToken", "accessToken" ].forEach((key) => {
+                localStorage.removeItem(key)
+                sessionStorage.removeItem(key)
+            })
+            setUser(null)
             setLoading(false)
         }
     }
 
-    useEffect(() => {
-
-        const getAndSetUser = async () => {
-            try {
-
-                const data = await getMe()
-                setUser(data.user)
-            } catch (err) { } finally {
-                setLoading(false)
-            }
+    const handleGoogleLogin = async () => {
+        setSubmitting(true)
+        try {
+            const accessToken = await requestGoogleAccessToken()
+            const data = await loginWithGoogle(accessToken)
+            if (!data?.user) throw new Error(data?.message || "Google sign-in failed")
+            setUser(data.user)
+            return data
+        } catch (err) {
+            throw new Error(err.message || "Google sign-in failed")
+        } finally {
+            setSubmitting(false)
         }
+    }
 
-        getAndSetUser()
-
-    }, [])
-
-    return { user, loading, handleRegister, handleLogin, handleLogout }
+    return { user, loading, submitting, handleRegister, handleLogin, handleGoogleLogin, handleLogout }
 }

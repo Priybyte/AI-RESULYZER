@@ -4,17 +4,33 @@
     outline: none;
     padding-inline: 1.5rem;
     padding-block: 0.75rem;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 
-    transition: all 0.3s ease-in-out;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
 
     &.primary-button{
-        background-color: #e1034d;
+        background: linear-gradient(135deg, #ff2d78 0%, #c81e5d 100%);
         color: white;
+        box-shadow: 0 8px 20px rgba(255, 45, 120, 0.22);
+
+        &:hover:not(:disabled){
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px rgba(255, 45, 120, 0.32);
+            filter: brightness(1.05);
+        }
     }
 
-    &:active{
-        transform: scale(0.9);
+    &:disabled{
+        opacity: 0.65;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    &:active:not(:disabled){
+        transform: scale(0.98);
     }
 }
