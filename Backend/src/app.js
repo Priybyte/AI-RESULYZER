@@ -7,18 +7,13 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
-const allowedOrigins = [
-    env.frontendUrl,
-    "https://ai-resulyzer.vercel.app",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173"
-].filter(Boolean)
-
 app.use(cors({
-    origin(origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
-        return callback(new Error("Origin is not allowed by CORS"))
-    },
+    origin: [
+        "https://ai-resulyzer.vercel.app", 
+        "http://localhost:5173", 
+        "http://localhost:3000",
+        env.frontendUrl
+    ].filter(Boolean),
     credentials: true
 }))
 
