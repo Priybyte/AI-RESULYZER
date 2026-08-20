@@ -1,7 +1,7 @@
 const { GoogleGenAI } = require("@google/genai")
 const { z } = require("zod")
 const { zodToJsonSchema } = require("zod-to-json-schema")
-const puppeteer = require("puppeteer")
+const PDFDocument = require("pdfkit")
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_GENAI_API_KEY
@@ -58,27 +58,42 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 
 
 async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch({
-        headless: true,
-        // Required for Chromium to run inside Render's Linux container.
-        args: ["--no-sandbox", "--disable-setuid-sandbox"]
-    })
+    const text = htmlContent
+        .replace(/<style[\\s\\S]*?<\\/style>|<script[\\s\\S]*?<\\/script>/gi, "")
+        .replace(/<\\/(p|div|h[1-6]|li|tr)>|<br\\s*\\/?>/gi, "\\n")
+        .replace(/<li[^>]*>/gi, "• ")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&nbsp;/gi, " ")
+        .replace(/&amp;/gi, "&")
+        .replace(/&lt;/gi, "<")
+        .replace(/&gt;/gi, ">")
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/\\n{3,}/g, "\\n\\n")
+        .trim()
 
-    try {
-        const page = await browser.newPage()
-        await page.setContent(htmlContent, { waitUntil: "networkidle0" })
-
-        return await page.pdf({
-            format: "A4", margin: {
-                top: "20mm",
-                bottom: "20mm",
-                left: "15mm",
-                right: "15mm"
-            }
+    return new Promise((resolve, reject) => {
+        const document = new PDFDocument({
+            size: "A4",
+            margin: 50,
+            info: { Title: "Tailored Resume" }
         })
-    } finally {
-        await browser.close()
-    }
+        const chunks = []
+
+        document.on("data", (chunk) => chunks.push(chunk))
+        document.on("end", () => resolve(Buffer.concat(chunks)))
+        document.on("error", reject)
+
+        document.font("Helvetica-Bold").fontSize(18).text("Tailored Resume", { align: "center" })
+        document.moveDown(0.75)
+        document.strokeColor("#2563eb").lineWidth(1).moveTo(50, document.y).lineTo(545, document.y).stroke()
+        document.moveDown(1)
+        document.font("Helvetica").fontSize(10).fillColor("#111827").text(text, {
+            align: "left",
+            lineGap: 3
+        })
+        document.end()
+    })
 }
 
 async function generateResumePdf({ resume, selfDescription, jobDescription }) {
