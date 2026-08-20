@@ -38,81 +38,67 @@ INTERVIEW-AI/
     ├── .env.example  # Template for frontend environment variables
     └── package.json  # Frontend dependencies
 
-⚙️ Step-by-Step Local Setup Guide
+---
+
+## ⚙️ Step-by-Step Local Setup Guide
+
 If you want to run, test, or modify this project locally on your machine, follow these steps:
 
-Prerequisites
+### Prerequisites
 Make sure you have the following installed on your computer:
+* **Node.js** (v16 or higher recommended)
+* **Git**
+* A free **MongoDB Atlas** account (or a local MongoDB instance)
 
-Node.js (v16 or higher recommended)
+---
 
-Git
-
-A free MongoDB Atlas account (or a local MongoDB instance)
-
-Step 1: Clone the Repository
+### Step 1: Clone the Repository
 Open your terminal and clone the repository to your local machine:
-
-Bash
-git clone [https://github.com/Priybyte/AI-RESULYZER.git](https://github.com/Priybyte/AI-RESULYZER.git)
+git clone https://github.com/Priybyte/AI-RESULYZER.git
 cd INTERVIEW-AI
-Step 2: Set Up and Run the Backend
-Navigate into the backend folder:
 
-Bash
-cd Backend
-Install the required dependencies:
+---
 
-Bash
-npm install
-Create an environment configuration file:
+### Step 2: Set Up and Run the Backend
 
-Look at the .env.example file provided in the Backend folder.
+1. Navigate into the backend folder:
+   cd Backend
 
-Create a new file named .env in the same directory.
+2. Install the required dependencies:
+   npm install
 
-Add your required environment variables (such as your PORT, MONGO_URI, Google Client credentials, and JWT secrets):
+3. Create an environment configuration file:
+   - Look at the `.env.example` file provided in the `Backend` folder.
+   - Create a new file named `.env` in the same directory.
+   - Add your required environment variables (PORT, MONGO_URI, Google Client credentials, JWT secrets).
 
-Code snippet
-PORT=5000
-MONGO_URI=your_mongodb_connection_string_here
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-JWT_SECRET=your_jwt_secret
-Start the backend development server:
+4. Start the backend development server:
+   npm run dev
 
-Bash
-npm run dev
-(Your backend should now be running locally on http://localhost:5000 or the port you specified).
+---
 
-Step 3: Set Up and Run the Frontend
-Open a new terminal window/tab, and navigate into the frontend folder from the root directory:
+### Step 3: Set Up and Run the Frontend
 
-Bash
-cd Frontend
-Install the required frontend dependencies:
+1. Open a new terminal window/tab, and navigate into the frontend folder from the root directory:
+   cd Frontend
 
-Bash
-npm install
-Configure your frontend environment variables:
+2. Install the required frontend dependencies:
+   npm install
 
-Check if there is a .env.example file in the Frontend folder.
+3. Configure your frontend environment variables:
+   - Check if there is a `.env.example` file in the `Frontend` folder.
+   - Create a `.env` file and set your backend API base URL (`VITE_API_URL=http://localhost:5000`).
 
-Create a .env file and set your backend API base URL so the frontend knows where to send requests:
+4. Start the frontend development server:
+   npm run dev
 
-Code snippet
-VITE_API_URL=http://localhost:5000
-VITE_GOOGLE_CLIENT_ID=your_google_client_id
-Start the frontend development server:
+---
 
-Bash
-npm run dev
-(Vite will spin up a local server, usually at http://localhost:5173. Open this link in your browser to use the app).
+## 🌐 Live Deployment Links
+* **Frontend Application:** [Live URL coming soon / Add Vercel Link]
+* **Backend API Service:** [Live URL coming soon / Add Render Link]
 
-🌐 Live Deployment Links
-Frontend Application: [Live URL coming soon / Add Vercel Link]
+---
 
-Backend API Service: [Live URL coming soon / Add Render Link]
-
-📄 License
+## 📄 License
 This project is open-source and available under the MIT License.
