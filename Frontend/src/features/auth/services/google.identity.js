@@ -1,5 +1,5 @@
 const GOOGLE_IDENTITY_SCRIPT = "https://accounts.google.com/gsi/client"
-const API_URL = "https://ai-resume-backend-a6io.onrender.com"
+const API_URL = "https://pri-rezulyzer-10082004.onrender.com"
 
 let googleScriptPromise
 
