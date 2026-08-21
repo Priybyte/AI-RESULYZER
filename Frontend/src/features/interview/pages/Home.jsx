@@ -66,13 +66,13 @@ const Home = () => {
         <div className='home-page'>
             <ProfileLogoutButton />
 
-            <aside className='dashboard-sidebar'>
+            {false && <aside className='dashboard-sidebar'>
                 <strong>AI-Resulyzer</strong>
                 <div className='sidebar-menu'>
                     {["Recent Interview Plans", "Resume Versions", "Insights"].map((item, index) => <button key={item} onClick={() => setActiveSidebarItem(item)} className={activeSidebarItem === item ? 'active' : ''}><span>{index + 1}</span>{item}</button>)}
                 </div>
                 {["Dashboard", "Resumes", "Insights", "Versions", "History", "Settings"].map((item, index) => <button key={item} className={index === 0 ? 'active' : ''}><span>{["▦", "▤", "⌁", "◫", "↶", "⚙"][index]}</span>{item}</button>)}
-            </aside>
+            </aside>}
             <div className='dashboard-main'>
 
             {/* Page Header */}

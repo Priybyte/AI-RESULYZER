@@ -12,13 +12,13 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
 
     &.primary-button{
-        background: linear-gradient(135deg, #ff2d78 0%, #c81e5d 100%);
+        background: linear-gradient(135deg, #68bc8c 0%, #285a52 100%);
         color: white;
-        box-shadow: 0 8px 20px rgba(255, 45, 120, 0.22);
+        box-shadow: 0 8px 20px rgba(104, 188, 140, 0.22);
 
         &:hover:not(:disabled){
             transform: translateY(-1px);
-            box-shadow: 0 12px 24px rgba(255, 45, 120, 0.32);
+            box-shadow: 0 12px 24px rgba(104, 188, 140, 0.32);
             filter: brightness(1.05);
         }
     }
