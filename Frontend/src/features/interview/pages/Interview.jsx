@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import ProfileLogoutButton from '../../auth/components/ProfileLogoutButton.jsx'
 
 
@@ -63,6 +63,7 @@ const Interview = () => {
     const [ error, setError ] = useState("")
     const { report, getReportById, loading, getResumePdf } = useInterview()
     const { interviewId } = useParams()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (interviewId) {
@@ -104,6 +105,9 @@ const Interview = () => {
                 {/* ── Left Nav ── */}
                 <nav className='interview-nav'>
                     <div className="nav-content">
+                        <button type='button' className='interview-nav__back' onClick={() => navigate('/')}>
+                            <span aria-hidden='true'>←</span> Back to preferences
+                        </button>
                         <p className='interview-nav__label'>Sections</p>
                         {NAV_ITEMS.map(item => (
                             <button
