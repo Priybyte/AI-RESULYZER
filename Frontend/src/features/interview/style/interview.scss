@@ -501,17 +501,21 @@ $severity-low: #9de3b9;
 }
 
 .skill-tag {
-    font-size: 0.775rem;
-    font-weight: 500;
-    padding: 0.35rem 0.75rem;
-    border-radius: 2rem;
+    max-width: 100%;
+    box-sizing: border-box;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.85rem;
     color: #fff;
-    background: #315e4d;
-    border: 1px solid #4d8069;
+    background: $bg-panel;
+    border: 1px solid $border-color;
     cursor: default;
     transition: background-color 0.2s ease;
 
-    &:hover { background: #3b735e; }
+    &:hover { background: $bg-panel; }
 }
 
 .interview-error {
