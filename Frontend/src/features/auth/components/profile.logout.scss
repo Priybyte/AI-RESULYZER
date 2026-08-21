@@ -14,8 +14,8 @@
     border: 1px solid #39445e;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: none;
+    transition: border-color 0.2s ease;
 
     img, span {
         display: grid;
@@ -26,7 +26,7 @@
     }
 
     img { object-fit: cover; }
-    span { background: linear-gradient(135deg, #68bc8c, #285a52); font-size: 0.95rem; font-weight: 700; }
+    span { background: #315e4d; font-size: 0.95rem; font-weight: 700; }
 
     &::after {
         position: absolute;
@@ -46,7 +46,7 @@
         transition: opacity 0.2s ease, transform 0.2s ease;
     }
 
-    &:hover, &:focus-visible { border-color: #68bc8c; transform: translateY(-1px); box-shadow: 0 12px 28px rgba(104, 188, 140, 0.25); }
+    &:hover, &:focus-visible { border-color: #68bc8c; }
     &:hover::after, &:focus-visible::after { opacity: 1; transform: translateY(0); }
     &:disabled { cursor: wait; opacity: 0.65; }
 }

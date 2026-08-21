@@ -505,39 +505,20 @@ $severity-low: #9de3b9;
     font-weight: 500;
     padding: 0.35rem 0.75rem;
     border-radius: 2rem;
-    border: 1px solid;
+    color: #fff;
+    background: #315e4d;
+    border: 1px solid #4d8069;
     cursor: default;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    transition: background-color 0.2s ease;
 
-    &:hover {
-        transform: translateY(-1px);
-        filter: brightness(1.08);
-    }
-
-    &--high {
-        color: $severity-high;
-        background-color: rgba($severity-high, 0.1);
-        border-color: rgba($severity-high, 0.25);
-    }
-
-    &--medium {
-        color: $severity-medium;
-        background-color: rgba($severity-medium, 0.1);
-        border-color: rgba($severity-medium, 0.25);
-    }
-
-    &--low {
-        color: $severity-low;
-        background-color: rgba($severity-low, 0.1);
-        border-color: rgba($severity-low, 0.25);
-    }
+    &:hover { background: #3b735e; }
 }
 
 .interview-error {
     margin: 0 0 1rem;
     padding: 0.85rem 1rem;
-    color: #fecdd3;
-    background: rgba(40, 90, 82, 0.24);
+    color: #fff;
+    background: #315e4d;
     border: 1px solid rgba(104, 188, 140, 0.45);
     border-radius: 0.7rem;
     font-size: 0.9rem;

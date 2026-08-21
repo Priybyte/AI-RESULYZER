@@ -1,11 +1,12 @@
+import { Link } from "react-router"
+
 export default function AuthShell({ mode, children }) {
-    const isLogin = mode === "login"
 
     return (
         <main className="auth-page">
             <nav className="auth-nav" aria-label="Authentication">
-                <span className="auth-brand">AI-Resulyzer</span>
-                <span className="auth-nav__mode">{isLogin ? "Sign in" : "Create account"}</span>
+                <span aria-hidden="true" />
+                <Link className="auth-nav__mode" to="/">Home</Link>
             </nav>
             <section className="auth-layout">
                 <aside className="auth-showcase">
@@ -16,9 +17,9 @@ export default function AuthShell({ mode, children }) {
                 </aside>
                 <div className="form-container">
                     <div className="auth-intro">
-                        <span className="auth-intro__eyebrow">{isLogin ? "Welcome back" : "Start preparing"}</span>
-                        <h2>{isLogin ? "Sign in" : "Create account"}</h2>
-                        <p className="form-subtitle">{isLogin ? "Continue building sharper, more personalized interview plans." : "Create your account to get a tailored resume and interview strategy."}</p>
+                        <span className="auth-intro__eyebrow">{mode === "login" ? "Welcome back" : "Start preparing"}</span>
+                        <h2>{mode === "login" ? "Sign in" : "Create account"}</h2>
+                        <p className="form-subtitle">{mode === "login" ? "Continue building sharper, more personalized interview plans." : "Create your account to get a tailored resume and interview strategy."}</p>
                     </div>
                     {children}
                 </div>

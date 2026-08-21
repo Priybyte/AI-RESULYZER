@@ -12,14 +12,14 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
 
     &.primary-button{
-        background: linear-gradient(135deg, #68bc8c 0%, #285a52 100%);
+        background: #315e4d;
         color: white;
-        box-shadow: 0 8px 20px rgba(104, 188, 140, 0.22);
+        box-shadow: none;
 
         &:hover:not(:disabled){
-            transform: translateY(-1px);
-            box-shadow: 0 12px 24px rgba(104, 188, 140, 0.32);
-            filter: brightness(1.05);
+            background: #3b735e;
+            transform: none;
+            box-shadow: none;
         }
     }
 
@@ -31,6 +31,6 @@
     }
 
     &:active:not(:disabled){
-        transform: scale(0.98);
+        transform: none;
     }
 }
