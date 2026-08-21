@@ -177,8 +177,8 @@ main{
 
     .form-error{
         background-color: rgba($accent, 0.12);
-        color: #ff8aa8;
-        border: 1px solid rgba($accent, 0.35);
+        color: #b8e7ca;
+        border: 1px solid rgba(104, 188, 140, 0.45);
         border-radius: 0.75rem;
         padding: 0.8rem 1rem;
         font-size: 0.88rem;
@@ -194,8 +194,8 @@ main{
     padding: 0;
     overflow: hidden;
     background:
-        radial-gradient(circle at 18% 82%, rgba(255, 45, 120, 0.36), transparent 32%),
-        radial-gradient(circle at 84% 14%, rgba(57, 104, 214, 0.3), transparent 36%),
+        radial-gradient(circle at 18% 82%, rgba(40, 90, 82, 0.44), transparent 32%),
+        radial-gradient(circle at 84% 14%, rgba(38, 62, 96, 0.38), transparent 36%),
         #090d16;
 
     &::before {
@@ -297,13 +297,13 @@ main{
     padding: 2.75rem;
     background:
         linear-gradient(180deg, rgba(10, 19, 44, 0.1), rgba(8, 11, 25, 0.9)),
-        linear-gradient(135deg, #1e3978 0%, #72224f 52%, #160e27 100%);
+        linear-gradient(135deg, #183b4c 0%, #285a52 52%, #0b1722 100%);
 
     &__eyebrow, .auth-intro__eyebrow { color: #9de3b9; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
     h1 { max-width: 380px; margin: 0.8rem 0; color: #fff; font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.08; letter-spacing: -0.05em; }
     p { max-width: 390px; margin: 0; color: #c4cce0; font-size: 1rem; line-height: 1.6; text-align: left; }
     &__stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
-    &__stats span { padding: 0.4rem 0.65rem; color: #f6d9e5; border: 1px solid rgba(255,255,255,0.2); border-radius: 99px; font-size: 0.72rem; }
+    &__stats span { padding: 0.4rem 0.65rem; color: #d8eee0; border: 1px solid rgba(157, 227, 185, 0.28); border-radius: 99px; font-size: 0.72rem; }
 }
 
 @media (max-width: 760px) {

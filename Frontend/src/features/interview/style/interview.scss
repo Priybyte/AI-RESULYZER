@@ -10,9 +10,9 @@ $accent: #68bc8c;
 $font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
 // severity palette
-$severity-high: #ff4d4d;
-$severity-medium: #f5a623;
-$severity-low: #3fb950;
+$severity-high: #7ab99a;
+$severity-medium: #6096ae;
+$severity-low: #9de3b9;
 
 *::-webkit-scrollbar {
     display: none;
@@ -537,8 +537,8 @@ $severity-low: #3fb950;
     margin: 0 0 1rem;
     padding: 0.85rem 1rem;
     color: #fecdd3;
-    background: rgba(190, 24, 93, 0.14);
-    border: 1px solid rgba(244, 63, 94, 0.45);
+    background: rgba(40, 90, 82, 0.24);
+    border: 1px solid rgba(104, 188, 140, 0.45);
     border-radius: 0.7rem;
     font-size: 0.9rem;
     line-height: 1.4;
