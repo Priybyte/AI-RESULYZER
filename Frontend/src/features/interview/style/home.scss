@@ -537,7 +537,13 @@ $font-stack:     system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Robot
         display: flex;
         gap: 0.35rem;
 
-        input { width: 42%; }
+        input {
+            flex: 0 0 4.75rem;
+            width: 4.75rem;
+            padding-inline: 0.65rem;
+        }
+
+        select { flex: 1; }
     }
 
     &__hint {

@@ -112,7 +112,8 @@ async function loginUserController(req, res) {
             user: {
                 id: user._id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                avatarUrl: user.avatarUrl
             }
         })
     } catch (err) {
@@ -153,9 +154,10 @@ async function googleLoginController(req, res) {
             let suffix = 1
             while (await userModel.exists({ username })) username = `${baseUsername.slice(0, 20)}${suffix++}`
 
-            user = await userModel.create({ username, email: profile.email, googleId: profile.sub })
-        } else if (!user.googleId) {
-            user.googleId = profile.sub
+            user = await userModel.create({ username, email: profile.email, googleId: profile.sub, avatarUrl: profile.picture || "" })
+        } else {
+            if (!user.googleId) user.googleId = profile.sub
+            if (profile.picture) user.avatarUrl = profile.picture
             await user.save()
         }
 
@@ -164,7 +166,7 @@ async function googleLoginController(req, res) {
         return res.status(200).json({
             message: "Signed in with Google",
             token,
-            user: { id: user._id, username: user.username, email: user.email }
+            user: { id: user._id, username: user.username, email: user.email, avatarUrl: user.avatarUrl }
         })
     } catch (err) {
         console.error(err)
@@ -212,7 +214,8 @@ async function getMeController(req, res) {
         user: {
             id: user._id,
             username: user.username,
-            email: user.email
+            email: user.email,
+            avatarUrl: user.avatarUrl
         }
     })
 

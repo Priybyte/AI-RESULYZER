@@ -61,6 +61,12 @@ $severity-low: #3fb950;
     justify-content: space-between;
     gap: 0.25rem;
 
+    .nav-content {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+    }
+
     .button {
         width: 100%;
         display: inline-flex;
@@ -514,4 +520,12 @@ $severity-low: #3fb950;
     border-radius: 0.7rem;
     font-size: 0.9rem;
     line-height: 1.4;
+}
+
+.interview-error--nav {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+    padding: 0.7rem;
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
 }
