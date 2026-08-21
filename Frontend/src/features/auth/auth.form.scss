@@ -186,3 +186,130 @@ main{
         text-align: left;
     }
 }
+
+// Split authentication experience
+.auth-page {
+    position: relative;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 18% 82%, rgba(255, 45, 120, 0.36), transparent 32%),
+        radial-gradient(circle at 84% 14%, rgba(57, 104, 214, 0.3), transparent 36%),
+        #090d16;
+
+    &::before {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(115deg, rgba(7, 12, 28, 0.7), rgba(18, 24, 49, 0.24));
+        content: '';
+        pointer-events: none;
+    }
+}
+
+.auth-nav, .auth-layout, .auth-info { position: relative; z-index: 1; }
+
+.auth-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: min(1040px, calc(100% - 3rem));
+    margin: 0 auto;
+    padding: 1.4rem 0;
+
+    button { font: inherit; cursor: pointer; }
+
+    .auth-brand {
+        padding: 0;
+        color: $text-primary;
+        background: none;
+        border: 0;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+    }
+
+    &__links { display: flex; gap: 0.3rem; }
+    &__links button {
+        padding: 0.45rem 0.65rem;
+        color: $text-muted;
+        background: transparent;
+        border: 0;
+        border-radius: 0.45rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        &:hover, &:focus-visible { color: $text-primary; background: rgba(255, 255, 255, 0.08); }
+    }
+}
+
+.auth-info {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    width: min(780px, calc(100% - 3rem));
+    margin: -0.35rem auto 1rem;
+    padding: 0.75rem 1rem;
+    color: #dce5fa;
+    background: rgba(13, 20, 39, 0.8);
+    border: 1px solid rgba(116, 145, 211, 0.28);
+    border-radius: 0.7rem;
+    backdrop-filter: blur(14px);
+    font-size: 0.84rem;
+    line-height: 1.45;
+    p { margin: 0; text-align: left; }
+    strong { display: block; margin-bottom: 0.12rem; color: #fff; }
+    button { color: $text-muted; background: none; border: 0; font-size: 1.2rem; cursor: pointer; }
+}
+
+.auth-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+    width: min(1040px, calc(100% - 3rem));
+    margin: clamp(2rem, 7vh, 5rem) auto;
+    overflow: hidden;
+    background: rgba(13, 19, 35, 0.74);
+    border: 1px solid rgba(117, 141, 195, 0.25);
+    border-radius: 1.25rem;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(16px);
+
+    .form-container {
+        max-width: none;
+        margin: 0;
+        padding: 2.5rem 2.75rem;
+        background: rgba(19, 26, 45, 0.9);
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        &:hover { transform: none; box-shadow: none; }
+        h2 { color: $text-primary; font-size: 1.7rem; letter-spacing: -0.03em; }
+    }
+}
+
+.auth-showcase {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 500px;
+    padding: 2.75rem;
+    background:
+        linear-gradient(180deg, rgba(10, 19, 44, 0.1), rgba(8, 11, 25, 0.9)),
+        linear-gradient(135deg, #1e3978 0%, #72224f 52%, #160e27 100%);
+
+    &__eyebrow, .auth-intro__eyebrow { color: #ff6b9d; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+    h1 { max-width: 380px; margin: 0.8rem 0; color: #fff; font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.08; letter-spacing: -0.05em; }
+    p { max-width: 390px; margin: 0; color: #c4cce0; font-size: 1rem; line-height: 1.6; text-align: left; }
+    &__stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+    &__stats span { padding: 0.4rem 0.65rem; color: #f6d9e5; border: 1px solid rgba(255,255,255,0.2); border-radius: 99px; font-size: 0.72rem; }
+}
+
+@media (max-width: 760px) {
+    .auth-nav { width: min(100% - 1.5rem, 520px); padding: 1rem 0; }
+    .auth-nav__links { gap: 0; }
+    .auth-nav__links button { padding: 0.4rem; font-size: 0.7rem; }
+    .auth-layout { grid-template-columns: 1fr; width: min(100% - 1.5rem, 520px); margin: 1.25rem auto; }
+    .auth-showcase { min-height: 230px; padding: 2rem; }
+    .auth-showcase h1 { font-size: 2rem; }
+    .auth-layout .form-container { padding: 2rem 1.5rem; }
+}

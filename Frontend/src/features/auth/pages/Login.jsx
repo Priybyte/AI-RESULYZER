@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router'
 import "../auth.form.scss"
 import { useAuth } from '../hooks/useAuth'
+import AuthShell from '../components/AuthShell'
 
 const Login = () => {
 
@@ -39,13 +40,7 @@ const Login = () => {
 
 
     return (
-        <main>
-            <div className="form-container">
-                <div className="auth-intro">
-                    <span className="auth-intro__eyebrow">AI-powered career prep</span>
-                    <h1>Welcome to AI Resume &amp; Interview Analyzer</h1>
-                    <p className="form-subtitle">Welcome back. Sign in to create sharper, more personalized interview plans.</p>
-                </div>
+        <AuthShell mode="login">
                 <form onSubmit={handleSubmit}>
                     {error && <p className="form-error" role="alert">{error}</p>}
                     <div className="input-group">
@@ -72,8 +67,7 @@ const Login = () => {
                     {submitting ? 'Connecting to Google...' : 'Continue with Google'}
                 </button>
                 <p>Don't have an account? <Link to={"/register"} >Register</Link> </p>
-            </div>
-        </main>
+        </AuthShell>
     )
 }
 
