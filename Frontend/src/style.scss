@@ -39,3 +39,7 @@ body,
         letter-spacing: 0.01em;
     }
 }
+
+.skeleton-page, .loading-screen { gap: 1rem; }
+.skeleton-card { width:min(900px, 88vw); height:110px; border-radius:1rem; background:linear-gradient(100deg, #161b22 30%, #222b3b 45%, #161b22 60%); background-size:200% 100%; animation:skeleton-shimmer 1.25s infinite linear; }
+@keyframes skeleton-shimmer { to { background-position:-200% 0; } }

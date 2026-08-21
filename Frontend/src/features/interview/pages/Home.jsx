@@ -3,10 +3,13 @@ import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
 import ProfileLogoutButton from '../../auth/components/ProfileLogoutButton.jsx'
+import ThemeToggle from '../../auth/components/ThemeToggle.jsx'
+import { useAuth } from '../../auth/hooks/useAuth.js'
 
 const Home = () => {
 
     const { loading, generateReport, reports, deleteReport } = useInterview()
+    const { user } = useAuth()
     const [ jobDescription, setJobDescription ] = useState("")
     const [ selfDescription, setSelfDescription ] = useState("")
     const [ resumeFile, setResumeFile ] = useState(null)
@@ -54,21 +57,27 @@ const Home = () => {
 
     if (loading) {
         return (
-            <main className='loading-screen'>
-                <h1>Loading your interview plan...</h1>
-            </main>
+            <main className='loading-screen'><div className='skeleton-card' /><div className='skeleton-card' /><div className='skeleton-card' /></main>
         )
     }
 
     return (
         <div className='home-page'>
             <ProfileLogoutButton />
+            <ThemeToggle />
+
+            <aside className='dashboard-sidebar'>
+                <strong>AI-Resulyzer</strong>
+                {["Dashboard", "Resumes", "Insights", "Versions", "History", "Settings"].map((item, index) => <button key={item} className={index === 0 ? 'active' : ''}><span>{["▦", "▤", "⌁", "◫", "↶", "⚙"][index]}</span>{item}</button>)}
+            </aside>
+            <div className='dashboard-main'>
 
             {/* Page Header */}
             <header className='page-header'>
                 <div>
                     <span className='dashboard-eyebrow'>AI Resume &amp; Interview Analyzer</span>
-                    <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
+                    <h1>Hello, {user?.username || 'there'}.</h1>
+                    <p className='dashboard-subheading'>Create Your Custom <span className='highlight'>Interview Plan</span></p>
                     <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
                 </div>
             </header>
@@ -220,6 +229,7 @@ const Home = () => {
                 <a href='#'>Terms of Service</a>
                 <a href='#'>Help Center</a>
             </footer>
+            </div>
         </div>
     )
 }

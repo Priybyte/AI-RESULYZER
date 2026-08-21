@@ -19,7 +19,7 @@ const Register = () => {
         setError("")
         try {
             await handleRegister({ username, email, password })
-            navigate("/")
+            navigate("/dashboard")
         } catch (err) {
             setError(err.message || "Registration failed")
         }
@@ -29,14 +29,14 @@ const Register = () => {
         setError("")
         try {
             await handleGoogleLogin()
-            navigate('/', { replace: true })
+            navigate('/dashboard', { replace: true })
         } catch (err) {
             setError(err.message || "Google sign-in failed")
         }
     }
 
     if (loading) {
-        return (<main><h1>Loading.......</h1></main>)
+        return (<main className="skeleton-page"><div className="skeleton-card" /><div className="skeleton-card" /></main>)
     }
 
     return (

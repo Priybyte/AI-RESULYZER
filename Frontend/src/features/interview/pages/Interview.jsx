@@ -3,6 +3,7 @@ import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
 import ProfileLogoutButton from '../../auth/components/ProfileLogoutButton.jsx'
+import ThemeToggle from '../../auth/components/ThemeToggle.jsx'
 
 
 
@@ -82,9 +83,7 @@ const Interview = () => {
 
     if (loading) {
         return (
-            <main className='loading-screen'>
-                <h1>Loading your interview plan...</h1>
-            </main>
+            <main className='loading-screen'><div className='skeleton-card' /><div className='skeleton-card' /><div className='skeleton-card' /></main>
         )
     }
 
@@ -100,12 +99,13 @@ const Interview = () => {
     return (
         <div className='interview-page'>
             <ProfileLogoutButton />
+            <ThemeToggle />
             <div className='interview-layout'>
 
                 {/* ── Left Nav ── */}
                 <nav className='interview-nav'>
                     <div className="nav-content">
-                        <button type='button' className='interview-nav__back' onClick={() => navigate('/')}>
+                        <button type='button' className='interview-nav__back' onClick={() => navigate('/dashboard')}>
                             <span aria-hidden='true'>←</span> Back to preferences
                         </button>
                         <p className='interview-nav__label'>Sections</p>
