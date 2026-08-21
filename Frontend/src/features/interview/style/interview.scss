@@ -218,6 +218,10 @@ $severity-low: #9de3b9;
         box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
     }
 
+    &:active {
+        transform: translateY(0) scale(0.99);
+    }
+
     &__header {
         display: flex;
         align-items: flex-start;
@@ -522,7 +526,7 @@ $severity-low: #9de3b9;
     margin: 0 0 1rem;
     padding: 0.85rem 1rem;
     color: #fff;
-    background: #315e4d;
+    background: #79c19a;
     border: 1px solid rgba(104, 188, 140, 0.45);
     border-radius: 0.7rem;
     font-size: 0.9rem;
