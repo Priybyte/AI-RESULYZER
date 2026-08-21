@@ -6,12 +6,18 @@ const scores = [{ label: "ATS readiness", target: 86 }, { label: "Interview matc
 
 function ScoreCard({ label, target }) {
     const [ value, setValue ] = useState(0)
+    const [ isWiggling, setIsWiggling ] = useState(false)
     useEffect(() => {
         let current = 0
         const timer = setInterval(() => { current += 2; setValue(Math.min(current, target)); if (current >= target) clearInterval(timer) }, 24)
         return () => clearInterval(timer)
     }, [ target ])
-    return <button className="landing-score" type="button" onClick={() => setValue(target)}><span>{label}</span><strong>{value}<small>/100</small></strong><i style={{ width: `${value}%` }} /></button>
+    const handleClick = () => {
+        setValue(target)
+        setIsWiggling(false)
+        requestAnimationFrame(() => setIsWiggling(true))
+    }
+    return <button className={`landing-score${isWiggling ? " landing-score--wiggle" : ""}`} type="button" onClick={handleClick} onAnimationEnd={() => setIsWiggling(false)}><span>{label}</span><strong>{value}<small>/100</small></strong><i style={{ width: `${value}%` }} /></button>
 }
 
 export default function Landing() {

@@ -137,11 +137,11 @@ main{
         align-items: center;
         justify-content: center;
         gap: 0.7rem;
-        border: 1px solid $border-color;
+        border: 1px solid #68bc8c;
         border-radius: 0.75rem;
         padding: 0.8rem 1rem;
-        background-color: $bg-input;
-        color: $text-primary;
+        background-color: #68bc8c;
+        color: #ffffff;
         font: inherit;
         font-size: 0.92rem;
         font-weight: 600;
@@ -152,9 +152,9 @@ main{
 
         &:hover {
             transform: translateY(-1px);
-            border-color: lighten($border-color, 12%);
-            background-color: #222b3e;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+            border-color: #68bc8c;
+            background-color: #68bc8c;
+            box-shadow: none;
         }
     }
 
@@ -176,9 +176,9 @@ main{
     }
 
     .form-error{
-        background-color: #9de3b9;
-        color: #071018;
-        border: 1px solid #9de3b9;
+        background-color: #68bc8c;
+        color: #ffffff;
+        border: 1px solid #68bc8c;
         border-radius: 0.75rem;
         padding: 0.8rem 1rem;
         font-size: 0.88rem;
@@ -252,16 +252,16 @@ main{
     width: min(780px, calc(100% - 3rem));
     margin: -0.35rem auto 1rem;
     padding: 0.75rem 1rem;
-    color: #071018;
-    background: #9de3b9;
-    border: 1px solid #9de3b9;
+    color: #ffffff;
+    background: #68bc8c;
+    border: 1px solid #68bc8c;
     border-radius: 0.7rem;
     backdrop-filter: blur(14px);
     font-size: 0.84rem;
     line-height: 1.45;
     p { margin: 0; text-align: left; }
     strong { display: block; margin-bottom: 0.12rem; color: #fff; }
-    button { color: $text-muted; background: none; border: 0; font-size: 1.2rem; cursor: pointer; }
+    button { color: #ffffff; background: none; border: 0; font-size: 1.2rem; cursor: pointer; }
 }
 
 .auth-layout {
