@@ -8,6 +8,8 @@ const ai = new GoogleGenAI({
 })
 
 const RATE_LIMIT_MESSAGE = "API rate limit reached for today. Please try again later or upgrade your plan."
+const MAX_ROADMAP_MONTHS = 48
+const MAX_QUESTION_COUNT = 50
 
 function isRateLimitError(error) {
     const status = error?.status || error?.statusCode || error?.response?.status
@@ -24,6 +26,27 @@ function toGeminiError(error) {
     }
 
     return error
+}
+
+function validateGenerationPreferences({ roadmapDuration, roadmapUnit, technicalQuestionCount, behavioralQuestionCount }) {
+    const duration = Number(roadmapDuration || 1)
+    const durationInMonths = roadmapUnit === "years" ? duration * 12 : duration
+    const technicalCount = Number(technicalQuestionCount || 10)
+    const behavioralCount = Number(behavioralQuestionCount || 10)
+
+    if (!Number.isFinite(duration) || duration <= 0 || durationInMonths > MAX_ROADMAP_MONTHS) {
+        const error = new Error("Cannot generate a roadmap for more than 4 years.")
+        error.status = 400
+        throw error
+    }
+
+    if (!Number.isInteger(technicalCount) || !Number.isInteger(behavioralCount) || technicalCount < 1 || behavioralCount < 1 || technicalCount > MAX_QUESTION_COUNT || behavioralCount > MAX_QUESTION_COUNT) {
+        const error = new Error("Cannot generate more than 50 questions.")
+        error.status = 400
+        throw error
+    }
+
+    return { durationInMonths, technicalCount, behavioralCount }
 }
 
 const interviewReportSchema = z.object({
@@ -50,13 +73,17 @@ const interviewReportSchema = z.object({
     title: z.string().describe("The title of the job for which the interview report is generated"),
 })
 
-async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
+async function generateInterviewReport({ resume, selfDescription, jobDescription, roadmapDuration, roadmapUnit, technicalQuestionCount, behavioralQuestionCount }) {
+
+    const preferences = validateGenerationPreferences({ roadmapDuration, roadmapUnit, technicalQuestionCount, behavioralQuestionCount })
 
 
     const prompt = `Generate an interview report for a candidate with the following details:
                         Resume: ${resume}
                         Self Description: ${selfDescription}
                         Job Description: ${jobDescription}
+                        Generate exactly ${preferences.technicalCount} technical questions and exactly ${preferences.behavioralCount} behavioral questions.
+                        Create a roadmap covering ${preferences.durationInMonths} month(s). Use one concise milestone per month, with the day field representing the milestone number.
 `
 
     try {
@@ -226,4 +253,4 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
 
 }
 
-module.exports = { generateInterviewReport, generateResumePdf, generatePdfFromHtml, isRateLimitError, RATE_LIMIT_MESSAGE }
+module.exports = { generateInterviewReport, generateResumePdf, generatePdfFromHtml, isRateLimitError, RATE_LIMIT_MESSAGE, validateGenerationPreferences }

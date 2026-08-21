@@ -504,3 +504,14 @@ $severity-low: #3fb950;
         border-color: rgba($severity-low, 0.25);
     }
 }
+
+.interview-error {
+    margin: 0 0 1rem;
+    padding: 0.85rem 1rem;
+    color: #fecdd3;
+    background: rgba(190, 24, 93, 0.14);
+    border: 1px solid rgba(244, 63, 94, 0.45);
+    border-radius: 0.7rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}

@@ -1,5 +1,5 @@
 const pdfParse = require("pdf-parse")
-const { generateInterviewReport, generateResumePdf, isRateLimitError, RATE_LIMIT_MESSAGE } = require("../services/ai.service")
+const { generateInterviewReport, generateResumePdf, isRateLimitError, RATE_LIMIT_MESSAGE, validateGenerationPreferences } = require("../services/ai.service")
 const interviewReportModel = require("../models/interviewReport.model")
 
 
@@ -17,15 +17,16 @@ async function generateInterViewReportController(req, res) {
             resumeText = resumeContent.text
         }
 
-        const { selfDescription, jobDescription } = req.body
-        const interViewReportByAi = await generateInterviewReport({ resume: resumeText, selfDescription, jobDescription })
-        const interviewReport = await interviewReportModel.create({ user: req.user.id, resume: resumeText, selfDescription, jobDescription, ...interViewReportByAi })
+        const { selfDescription, jobDescription, roadmapDuration, roadmapUnit, technicalQuestionCount, behavioralQuestionCount } = req.body
+        const preferences = validateGenerationPreferences({ roadmapDuration, roadmapUnit, technicalQuestionCount, behavioralQuestionCount })
+        const interViewReportByAi = await generateInterviewReport({ resume: resumeText, selfDescription, jobDescription, roadmapDuration, roadmapUnit, technicalQuestionCount, behavioralQuestionCount })
+        const interviewReport = await interviewReportModel.create({ user: req.user.id, resume: resumeText, selfDescription, jobDescription, roadmapDurationMonths: preferences.durationInMonths, ...interViewReportByAi })
 
         res.status(201).json({ message: "Interview report generated successfully.", interviewReport })
     } catch (error) {
         console.error("Interview report generation failed:", error)
-        res.status(isRateLimitError(error) ? 429 : 500).json({
-            message: isRateLimitError(error) ? RATE_LIMIT_MESSAGE : "Unable to generate the interview plan. Please try again."
+        res.status(isRateLimitError(error) ? 429 : error.status || 500).json({
+            message: isRateLimitError(error) ? RATE_LIMIT_MESSAGE : error.status ? error.message : "Unable to generate the interview plan. Please try again."
         })
     }
 

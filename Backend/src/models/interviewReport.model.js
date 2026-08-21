@@ -91,6 +91,12 @@ const interviewReportSchema = new mongoose.Schema({
     title: {
         type: String,
         required: [ true, "Job title is required" ]
+    },
+    roadmapDurationMonths: {
+        type: Number,
+        min: 1,
+        max: 48,
+        default: 1
     }
 }, {
     timestamps: true
@@ -99,4 +105,4 @@ const interviewReportSchema = new mongoose.Schema({
 
 const interviewReportModel = mongoose.model("InterviewReport", interviewReportSchema);
 
-module.exports = interviewReportModel;  
+module.exports = interviewReportModel;

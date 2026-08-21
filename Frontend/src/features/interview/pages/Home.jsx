@@ -11,6 +11,10 @@ const Home = () => {
     const [ jobDescription, setJobDescription ] = useState("")
     const [ selfDescription, setSelfDescription ] = useState("")
     const [ resumeFile, setResumeFile ] = useState(null)
+    const [ roadmapDuration, setRoadmapDuration ] = useState(1)
+    const [ roadmapUnit, setRoadmapUnit ] = useState("months")
+    const [ technicalQuestionCount, setTechnicalQuestionCount ] = useState(10)
+    const [ behavioralQuestionCount, setBehavioralQuestionCount ] = useState(10)
     const [ error, setError ] = useState("")
     const [ deletingReportId, setDeletingReportId ] = useState(null)
     const resumeInputRef = useRef()
@@ -26,7 +30,7 @@ const Home = () => {
         setError("")
         const selectedFile = resumeFile || resumeInputRef.current?.files?.[0] || null
         try {
-            const data = await generateReport({ jobDescription, selfDescription, resumeFile: selectedFile })
+            const data = await generateReport({ jobDescription, selfDescription, resumeFile: selectedFile, roadmapDuration, roadmapUnit, technicalQuestionCount, behavioralQuestionCount })
             if (data?._id) {
                 navigate(`/interview/${data._id}`)
             }
@@ -149,6 +153,25 @@ const Home = () => {
                                 className='panel__textarea panel__textarea--short'
                                 placeholder="Briefly describe your experience, key skills, and years of experience if you don't have a resume handy..."
                             />
+                        </div>
+
+                        <div className='generation-preferences'>
+                            <p className='section-label'>Interview Plan Preferences</p>
+                            <div className='generation-preferences__grid'>
+                                <label>Roadmap duration
+                                    <span className='generation-preferences__inline'>
+                                        <input type='number' min='1' max={roadmapUnit === 'years' ? '4' : '48'} value={roadmapDuration} onChange={(event) => setRoadmapDuration(event.target.value)} />
+                                        <select value={roadmapUnit} onChange={(event) => setRoadmapUnit(event.target.value)}><option value='months'>Months</option><option value='years'>Years</option></select>
+                                    </span>
+                                </label>
+                                <label>Technical questions
+                                    <input type='number' min='1' max='50' value={technicalQuestionCount} onChange={(event) => setTechnicalQuestionCount(event.target.value)} />
+                                </label>
+                                <label>Behavioral questions
+                                    <input type='number' min='1' max='50' value={behavioralQuestionCount} onChange={(event) => setBehavioralQuestionCount(event.target.value)} />
+                                </label>
+                            </div>
+                            <p className='generation-preferences__hint'>Up to 4 years of roadmap and 50 questions per category.</p>
                         </div>
 
                         {/* Info Box */}

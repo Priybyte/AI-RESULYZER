@@ -15,11 +15,11 @@ export const useInterview = () => {
 
     const { loading, setLoading, report, setReport, reports, setReports } = context
 
-    const generateReport = async ({ jobDescription, selfDescription, resumeFile }) => {
+    const generateReport = async ({ jobDescription, selfDescription, resumeFile, roadmapDuration, roadmapUnit, technicalQuestionCount, behavioralQuestionCount }) => {
         setLoading(true)
         let response = null
         try {
-            response = await generateInterviewReport({ jobDescription, selfDescription, resumeFile })
+            response = await generateInterviewReport({ jobDescription, selfDescription, resumeFile, roadmapDuration, roadmapUnit, technicalQuestionCount, behavioralQuestionCount })
             setReport(response.interviewReport)
         } catch (error) {
             console.log(error)
@@ -39,6 +39,7 @@ export const useInterview = () => {
             setReport(response.interviewReport)
         } catch (error) {
             console.log(error)
+            throw new Error(error.response?.data?.message || error.message || "Unable to load the interview plan.")
         } finally {
             setLoading(false)
         }
@@ -74,6 +75,7 @@ export const useInterview = () => {
         }
         catch (error) {
             console.log(error)
+            throw new Error(error.response?.data?.message || error.message || "Unable to download the resume.")
         } finally {
             setLoading(false)
         }
