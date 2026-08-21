@@ -12,12 +12,12 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
 
     &.primary-button{
-        background: #68bc8c;
+        background: #1d683d;
         color: #ffffff;
         box-shadow: none;
 
         &:hover:not(:disabled){
-            background: #68bc8c;
+            background: #1d683d;
             transform: none;
             box-shadow: none;
         }
