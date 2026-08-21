@@ -3,7 +3,6 @@ import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
 import ProfileLogoutButton from '../../auth/components/ProfileLogoutButton.jsx'
-import ThemeToggle from '../../auth/components/ThemeToggle.jsx'
 import { useAuth } from '../../auth/hooks/useAuth.js'
 
 const Home = () => {
@@ -19,9 +18,11 @@ const Home = () => {
     const [ behavioralQuestionCount, setBehavioralQuestionCount ] = useState(10)
     const [ error, setError ] = useState("")
     const [ deletingReportId, setDeletingReportId ] = useState(null)
+    const [ activeSidebarItem, setActiveSidebarItem ] = useState("Recent Interview Plans")
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
+    const displayName = (user?.username || "there").replace(/([a-z])([A-Z])/g, "$1 $2")
 
     const handleResumeChange = (e) => {
         const file = e.target.files?.[0] || null
@@ -64,10 +65,12 @@ const Home = () => {
     return (
         <div className='home-page'>
             <ProfileLogoutButton />
-            <ThemeToggle />
 
             <aside className='dashboard-sidebar'>
                 <strong>AI-Resulyzer</strong>
+                <div className='sidebar-menu'>
+                    {["Recent Interview Plans", "Resume Versions", "Insights"].map((item, index) => <button key={item} onClick={() => setActiveSidebarItem(item)} className={activeSidebarItem === item ? 'active' : ''}><span>{index + 1}</span>{item}</button>)}
+                </div>
                 {["Dashboard", "Resumes", "Insights", "Versions", "History", "Settings"].map((item, index) => <button key={item} className={index === 0 ? 'active' : ''}><span>{["▦", "▤", "⌁", "◫", "↶", "⚙"][index]}</span>{item}</button>)}
             </aside>
             <div className='dashboard-main'>
@@ -76,7 +79,7 @@ const Home = () => {
             <header className='page-header'>
                 <div>
                     <span className='dashboard-eyebrow'>AI Resume &amp; Interview Analyzer</span>
-                    <h1>Hello, {user?.username || 'there'}.</h1>
+                    <h1>Hello, {displayName}.</h1>
                     <p className='dashboard-subheading'>Create Your Custom <span className='highlight'>Interview Plan</span></p>
                     <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
                 </div>
@@ -199,7 +202,7 @@ const Home = () => {
             {error && <p className='home-error' role='alert'>{error}</p>}
 
             {/* Recent Reports List */}
-            {reports.length > 0 && (
+            {activeSidebarItem === "Recent Interview Plans" && reports.length > 0 && (
                 <section className='recent-reports'>
                     <h2>My Recent Interview Plans</h2>
                     <ul className='reports-list'>
@@ -221,6 +224,14 @@ const Home = () => {
                         ))}
                     </ul>
                 </section>
+            )}
+
+            {activeSidebarItem === "Resume Versions" && (
+                <section className='dashboard-view'><h2>Resume Versions</h2><p>Track the evolution of your tailored resumes.</p><div className='dashboard-metrics'><article><small>V1</small><strong>68</strong><span>Initial match</span></article><article><small>V2</small><strong>78</strong><span>Keyword improvements</span></article><article><small>V3</small><strong>86</strong><span>Interview ready</span></article></div></section>
+            )}
+
+            {activeSidebarItem === "Insights" && (
+                <section className='dashboard-view'><h2>Insights</h2><p>Trends from your saved interview plans.</p><div className='dashboard-metrics'><article><small>Average match</small><strong>{reports.length ? Math.round(reports.reduce((sum, report) => sum + report.matchScore, 0) / reports.length) : 0}%</strong><span>Across recent plans</span></article><article><small>Plans generated</small><strong>{reports.length}</strong><span>Preparation history</span></article><article><small>Trend</small><strong>+12%</strong><span>Preparation momentum</span></article></div></section>
             )}
 
             {/* Page Footer */}

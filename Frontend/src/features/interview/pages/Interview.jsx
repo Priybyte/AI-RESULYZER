@@ -3,7 +3,6 @@ import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
 import ProfileLogoutButton from '../../auth/components/ProfileLogoutButton.jsx'
-import ThemeToggle from '../../auth/components/ThemeToggle.jsx'
 
 
 
@@ -99,7 +98,6 @@ const Interview = () => {
     return (
         <div className='interview-page'>
             <ProfileLogoutButton />
-            <ThemeToggle />
             <div className='interview-layout'>
 
                 {/* ── Left Nav ── */}
