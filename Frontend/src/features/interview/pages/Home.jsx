@@ -6,11 +6,13 @@ import { useAuth } from '../../auth/hooks/useAuth.js'
 
 const Home = () => {
 
-    const { loading, generateReport, reports } = useInterview()
+    const { loading, generateReport, reports, deleteReport } = useInterview()
     const { user, handleLogout } = useAuth()
     const [ jobDescription, setJobDescription ] = useState("")
     const [ selfDescription, setSelfDescription ] = useState("")
     const [ resumeFile, setResumeFile ] = useState(null)
+    const [ error, setError ] = useState("")
+    const [ deletingReportId, setDeletingReportId ] = useState(null)
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
@@ -21,10 +23,29 @@ const Home = () => {
     }
 
     const handleGenerateReport = async () => {
+        setError("")
         const selectedFile = resumeFile || resumeInputRef.current?.files?.[0] || null
-        const data = await generateReport({ jobDescription, selfDescription, resumeFile: selectedFile })
-        if (data?._id) {
-            navigate(`/interview/${data._id}`)
+        try {
+            const data = await generateReport({ jobDescription, selfDescription, resumeFile: selectedFile })
+            if (data?._id) {
+                navigate(`/interview/${data._id}`)
+            }
+        } catch (requestError) {
+            setError(requestError.message)
+        }
+    }
+
+    const handleDeleteReport = async (event, interviewReportId) => {
+        event.stopPropagation()
+        setError("")
+        setDeletingReportId(interviewReportId)
+
+        try {
+            await deleteReport(interviewReportId)
+        } catch (requestError) {
+            setError(requestError.response?.data?.message || requestError.message || "Unable to delete the interview plan.")
+        } finally {
+            setDeletingReportId(null)
         }
     }
 
@@ -152,6 +173,8 @@ const Home = () => {
                 </div>
             </div>
 
+            {error && <p className='home-error' role='alert'>{error}</p>}
+
             {/* Recent Reports List */}
             {reports.length > 0 && (
                 <section className='recent-reports'>
@@ -159,6 +182,15 @@ const Home = () => {
                     <ul className='reports-list'>
                         {reports.map(report => (
                             <li key={report._id} className='report-item' onClick={() => navigate(`/interview/${report._id}`)}>
+                                <button
+                                    type='button'
+                                    className='delete-report-button'
+                                    aria-label={`Delete ${report.title || 'interview plan'}`}
+                                    title='Delete interview plan'
+                                    disabled={deletingReportId === report._id}
+                                    onClick={(event) => handleDeleteReport(event, report._id)}>
+                                    <svg aria-hidden='true' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M3 6h18' /><path d='M8 6V4h8v2' /><path d='M19 6l-1 14H6L5 6' /><path d='M10 11v5' /><path d='M14 11v5' /></svg>
+                                </button>
                                 <h3>{report.title || 'Untitled Position'}</h3>
                                 <p className='report-meta'>Generated on {new Date(report.createdAt).toLocaleDateString()}</p>
                                 <p className={`match-score ${report.matchScore >= 80 ? 'score--high' : report.matchScore >= 60 ? 'score--mid' : 'score--low'}`}>Match Score: {report.matchScore}%</p>

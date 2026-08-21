@@ -1,5 +1,5 @@
 const pdfParse = require("pdf-parse")
-const { generateInterviewReport, generateResumePdf } = require("../services/ai.service")
+const { generateInterviewReport, generateResumePdf, isRateLimitError, RATE_LIMIT_MESSAGE } = require("../services/ai.service")
 const interviewReportModel = require("../models/interviewReport.model")
 
 
@@ -9,34 +9,25 @@ const interviewReportModel = require("../models/interviewReport.model")
  * @description Controller to generate interview report based on user self description, resume and job description.
  */
 async function generateInterViewReportController(req, res) {
+    try {
+        let resumeText = ""
 
-    let resumeText = ""
+        if (req.file && req.file.buffer) {
+            const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
+            resumeText = resumeContent.text
+        }
 
-    if (req.file && req.file.buffer) {
-        const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
-        resumeText = resumeContent.text
+        const { selfDescription, jobDescription } = req.body
+        const interViewReportByAi = await generateInterviewReport({ resume: resumeText, selfDescription, jobDescription })
+        const interviewReport = await interviewReportModel.create({ user: req.user.id, resume: resumeText, selfDescription, jobDescription, ...interViewReportByAi })
+
+        res.status(201).json({ message: "Interview report generated successfully.", interviewReport })
+    } catch (error) {
+        console.error("Interview report generation failed:", error)
+        res.status(isRateLimitError(error) ? 429 : 500).json({
+            message: isRateLimitError(error) ? RATE_LIMIT_MESSAGE : "Unable to generate the interview plan. Please try again."
+        })
     }
-
-    const { selfDescription, jobDescription } = req.body
-
-    const interViewReportByAi = await generateInterviewReport({
-        resume: resumeText,
-        selfDescription,
-        jobDescription
-    })
-
-    const interviewReport = await interviewReportModel.create({
-        user: req.user.id,
-        resume: resumeText,
-        selfDescription,
-        jobDescription,
-        ...interViewReportByAi
-    })
-
-    res.status(201).json({
-        message: "Interview report generated successfully.",
-        interviewReport
-    })
 
 }
 
@@ -104,10 +95,32 @@ async function generateResumePdfController(req, res) {
         res.send(pdfBuffer)
     } catch (error) {
         console.error("Resume PDF generation failed:", error)
-        res.status(500).json({
-            message: "Unable to generate the resume PDF. Please try again."
+        res.status(isRateLimitError(error) ? 429 : 500).json({
+            message: isRateLimitError(error) ? RATE_LIMIT_MESSAGE : "Unable to generate the resume PDF. Please try again."
         })
     }
 }
 
-module.exports = { generateInterViewReportController, getInterviewReportByIdController, getAllInterviewReportsController, generateResumePdfController }
+async function deleteInterviewReportController(req, res) {
+    try {
+        const deletedReport = await interviewReportModel.findOneAndDelete({
+            _id: req.params.interviewId,
+            user: req.user.id
+        })
+
+        if (!deletedReport) {
+            return res.status(404).json({ message: "Interview report not found." })
+        }
+
+        res.status(200).json({ message: "Interview report deleted successfully." })
+    } catch (error) {
+        if (error.name === "CastError") {
+            return res.status(404).json({ message: "Interview report not found." })
+        }
+
+        console.error("Interview report deletion failed:", error)
+        res.status(500).json({ message: "Unable to delete the interview report. Please try again." })
+    }
+}
+
+module.exports = { generateInterViewReportController, getInterviewReportByIdController, getAllInterviewReportsController, generateResumePdfController, deleteInterviewReportController }

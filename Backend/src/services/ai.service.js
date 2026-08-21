@@ -7,6 +7,24 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_GENAI_API_KEY
 })
 
+const RATE_LIMIT_MESSAGE = "API rate limit reached for today. Please try again later or upgrade your plan."
+
+function isRateLimitError(error) {
+    const status = error?.status || error?.statusCode || error?.response?.status
+    const message = error?.message || ""
+
+    return status === 429 || /quota|resource_exhausted/i.test(message)
+}
+
+function toGeminiError(error) {
+    if (isRateLimitError(error)) {
+        const rateLimitError = new Error(RATE_LIMIT_MESSAGE)
+        rateLimitError.status = 429
+        return rateLimitError
+    }
+
+    return error
+}
 
 const interviewReportSchema = z.object({
     matchScore: z.number().describe("A score between 0 and 100 indicating how well the candidate's profile matches the job describe"),
@@ -41,16 +59,20 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
                         Job Description: ${jobDescription}
 `
 
-    const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-        config: {
-            responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(interviewReportSchema),
-        }
-    })
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: zodToJsonSchema(interviewReportSchema),
+            }
+        })
 
-    return JSON.parse(response.text)
+        return JSON.parse(response.text)
+    } catch (error) {
+        throw toGeminiError(error)
+    }
 
 
 }
@@ -186,22 +208,22 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                         The resume should not be so lengthy, it should ideally be 1-2 pages long when converted to PDF. Focus on quality rather than quantity and make sure to include all the relevant information that can increase the candidate's chances of getting an interview call for the given job description.
                     `
 
-    const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-        config: {
-            responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(resumePdfSchema),
-        }
-    })
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: zodToJsonSchema(resumePdfSchema),
+            }
+        })
 
-
-    const jsonContent = JSON.parse(response.text)
-
-    const pdfBuffer = await generatePdfFromHtml(jsonContent.html)
-
-    return pdfBuffer
+        const jsonContent = JSON.parse(response.text)
+        return generatePdfFromHtml(jsonContent.html)
+    } catch (error) {
+        throw toGeminiError(error)
+    }
 
 }
 
-module.exports = { generateInterviewReport, generateResumePdf, generatePdfFromHtml }
+module.exports = { generateInterviewReport, generateResumePdf, generatePdfFromHtml, isRateLimitError, RATE_LIMIT_MESSAGE }
