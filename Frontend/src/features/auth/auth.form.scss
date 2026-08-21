@@ -176,9 +176,9 @@ main{
     }
 
     .form-error{
-        background-color: rgba($accent, 0.12);
-        color: #b8e7ca;
-        border: 1px solid rgba(104, 188, 140, 0.45);
+        background-color: #9de3b9;
+        color: #071018;
+        border: 1px solid #9de3b9;
         border-radius: 0.75rem;
         padding: 0.8rem 1rem;
         font-size: 0.88rem;
@@ -252,9 +252,9 @@ main{
     width: min(780px, calc(100% - 3rem));
     margin: -0.35rem auto 1rem;
     padding: 0.75rem 1rem;
-    color: #dce5fa;
-    background: rgba(13, 20, 39, 0.8);
-    border: 1px solid rgba(116, 145, 211, 0.28);
+    color: #071018;
+    background: #9de3b9;
+    border: 1px solid #9de3b9;
     border-radius: 0.7rem;
     backdrop-filter: blur(14px);
     font-size: 0.84rem;
